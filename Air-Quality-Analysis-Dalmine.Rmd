@@ -1,0 +1,984 @@
+---
+title: "Analisi Statistica degli Inquinanti Atmosferici - Dalmine"
+author: 
+- "Marwa Laklaa (Technical Lead & Lead Analyst)"
+- "Altri membri: K. Frimane, S. Derouich, E. Birolini"
+date: "07/01/2026"
+output:
+  html_document:
+    theme: cosmo
+    toc: true
+    toc_float: true
+    code_folding: hide
+    highlight: tango
+  word_document:
+    toc: true
+  pdf_document:
+    toc: true
+subauthor: Gruppo Galileo
+subtitle: Analisi degli inquinanti PM10 e $NO_2$ a Dalmine
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+```{=html}
+<style>
+.main-container {
+  max-width: 95% !important;   
+  width: 95% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 20px 40px !important
+}
+.author{
+  background-color: #fffff;
+  padding: 10px;
+  border-radius: 50px;
+  display: block;
+  border: 1px solid #fffff;
+}
+body { 
+  font-family: sans-serif; 
+  background-color: #ffffff; 
+  color: #AFA4AC; 
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+
+.title {
+  font-family:  sans-serif;
+  font-weight: 1000;
+  color:#ffffff;
+  font-size: 3.5em;
+  text-align: center;
+  margin-top: 60px;
+  letter-spacing: 2px;
+  display: block;
+  padding: 50px;
+}
+
+.subtitle {
+  font-family: sans-serif;
+  font-weight: 300;
+  font-size: 1.1em;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  text-align: center;
+  color: #F3CCEC;
+  margin-bottom: 50px;
+}
+
+
+h1 {
+  font-family: Baskerville Old Face;
+  font-weight:900;
+  color: #ffffff;
+  background-color: #F3CCEC;
+  padding: 10px 30px;
+  display: block;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-size: 2.8em;
+  text-align: center; 
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+
+h2 {
+  font-family: Baskerville Old Face;
+  font-weight: 600;
+  color: #F3CCEC;
+  margin-top: 40px;
+  display:block;
+  border-bottom: 2px solid #fce4ec;
+  padding-bottom: 10px;
+  text-align: center;
+  letter-spacing: 2px;
+  
+}
+
+h3 {
+  font-family: Baskerville Old Face;
+  font-weight: 400;
+  color:#F3CCEC;
+  margin-top: 40px;
+  border-bottom: 2px solid #fce4ec;
+  padding-bottom: 20px;
+  text-align: center;
+  letter-spacing: 2px;
+  
+}
+h4{
+  font-family: Baskerville Old Face;
+  font-weight: 300;
+  color: #F3CCEC;
+  margin-top: 40px;
+  border-bottom: 2px solid #fce4ec;
+  padding-bottom: 20px;
+  text-align:center;
+  letter-spacing: 2px
+}
+blockquote {
+  border: none;
+  background-color: #fff2f6;
+  padding: 30px;
+  margin: 30px 0;
+  border-radius: 15px;
+  color: #ad1457;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 1.2em;
+}
+
+
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: #F3CCEC;
+  border-color: #F3CCEC;
+}
+
+.nav-pills, .nav-tabs {
+  display: flex !important;
+  justify-content: center !important; 
+  flex-wrap: wrap !important;        
+  gap: 12px !important;             
+  border: none !important;
+  margin: 20px 0 !important;
+}
+
+.nav-pills > li, .nav-tabs > li {
+  float: none !important;           
+  display: inline-block !important;
+}
+
+
+.nav-pills > li > a {
+  background-color: #fce4ec !important; 
+  color: #ad1457 !important;
+  font-weight: bold !important;
+  border-radius: 50px !important;
+  padding: 12px 30px !important;
+  border: 2px solid #f48fb1 !important;
+}
+
+.nav-pills > li.active > a {
+  background-color: #ad1457 !important; 
+  color: white !important;
+  box-shadow: 0 4px 12px rgba(173, 20, 87, 0.4);
+}
+
+
+.nav-tabs > li > a {
+  background-color: #EACDE9 !important; 
+  color: #880e4f !important;
+  font-weight: bold !important;
+  border-radius: 30px !important;
+  padding: 8px 20px !important;
+  border: 1px solid #EACDE9 !important;
+}
+
+.nav-tabs > li.active > a, 
+.nav-tabs > li.active > a:hover {
+  background-color: #EACDE9 !important; 
+  color: #ad1457 !important;
+  border: 1px solid #EACDE9 !important;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.1) !important;
+}
+
+/* EFFETTO HOVER */
+.nav-pills > li > a:hover, .nav-tabs > li > a:hover {
+  background-color: #EACDE9 !important;
+  color: white !important;
+  transform: translateY(-2px);
+  transition: 0.3s;
+}
+
+
+a[href^="#"]:not(.nav-link) {
+  background-color: #EACDE9;
+  color: white !important;
+  padding: 3px 10px;
+  border-radius: 50px;
+  text-decoration: none;
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: 0.3s;
+  display: inline-block;
+}
+
+a[href^="#"]:not(.nav-link):hover {
+  background-color: #EACDE9;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: translateY(-1px);
+}
+
+.nav-pills > li > a:hover {
+  background-color: #EACDE9; 
+  color: white !important;
+}
+</style>
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(corrplot)
+library(car)
+library(knitr)
+
+# 1. Caricamento dati
+setwd("C:\\Users\\marwa\\Documents\\PROGETTO")
+load("Agrimonia_stations.RData") 
+agri = a 
+
+# 2. Preparazione PM10
+ds_pm10 = agri[agri$NameStation == "Dalmine Via Verdi", ]
+ds_pm10$Time = as.Date(ds_pm10$Time)
+
+# 3. Dummy Stagionali e Covid
+ds_pm10$month = as.numeric(substr(ds_pm10$Time, 6, 7)) 
+ds_pm10$winter = 0; ds_pm10$winter[ds_pm10$month >= 12 | ds_pm10$month <= 2] = 1
+ds_pm10$spring = 0; ds_pm10$spring[ds_pm10$month >= 3 & ds_pm10$month <= 5] = 1
+ds_pm10$summer = 0; ds_pm10$summer[ds_pm10$month >= 6 & ds_pm10$month <= 8] = 1
+ds_pm10$autumn = 0; ds_pm10$autumn[ds_pm10$month >= 9 & ds_pm10$month <= 11] = 1
+ds_pm10$covid = 0; ds_pm10$covid[ds_pm10$Time >= "2020-03-09" & ds_pm10$Time <= "2020-05-18"] = 1
+
+
+ds_pm10 = ds_pm10[order(ds_pm10$Time), ]
+ds_pm10$PM10_ieri = c(NA, ds_pm10$AQ_pm10[1:(nrow(ds_pm10)-1)])
+
+colonne = c("Time", "AQ_pm10", "WE_temp_2m", "WE_tot_precipitation", "WE_rh_mean", 
+            "WE_surface_pressure", "WE_solar_radiation", "WE_wind_speed_10m_mean", 
+            "WE_wind_speed_100m_mean", "WE_blh_layer_max", "LI_bovine", 
+            "winter", "spring", "summer", "autumn", "covid", "PM10_ieri")
+
+ds_dyn1 = na.omit(ds_pm10[, colonne])
+first16 = "2016-01-01"
+last16 = "2016-12-31"
+first17 = "2017-01-01"
+last17 = "2017-12-31"
+first18 = "2018-01-01"
+last18 = "2018-12-31"
+first19 = "2019-01-01" 
+last19 = "2019-12-31"
+first20 = "2020-01-01" 
+last20 = "2020-12-31"
+first21 = "2021-01-01"
+last21 = "2021-12-31"
+
+ds2016 = ds_dyn1[ds_dyn1$Time >= first16 & ds_dyn1$Time <= last16, ]
+ds2017 = ds_dyn1[ds_dyn1$Time >= first17 & ds_dyn1$Time <= last17, ]
+ds2018 = ds_dyn1[ds_dyn1$Time >= first18 & ds_dyn1$Time <= last18, ]
+ds2019 = ds_dyn1[ds_dyn1$Time >= first19 & ds_dyn1$Time <= last19, ]
+ds2020 = ds_dyn1[ds_dyn1$Time >= first20 & ds_dyn1$Time <= last20, ]
+ds2021 = ds_dyn1[ds_dyn1$Time >= first21 & ds_dyn1$Time <= last21, ]
+# 5. Preparazione analoga per NO2
+ds_no2 = agri[agri$NameStation == "Dalmine Via Verdi", ]
+
+ds_no2$Time = as.Date(ds_no2$Time)
+ds_no2$month = as.numeric(substr(ds_no2$Time, 6, 7))
+ds_no2$winter = 0; 
+ds_no2$winter[ds_no2$month >= 12 | ds_no2$month <= 2] = 1
+ds_no2$spring = 0; 
+ds_no2$spring[ds_no2$month >= 3 & ds_no2$month <= 5] = 1
+ds_no2$summer = 0; 
+ds_no2$summer[ds_no2$month >= 6 & ds_no2$month <= 8] = 1
+ds_no2$autumn = 0; 
+ds_no2$autumn[ds_no2$month >= 9 & ds_no2$month <= 11] = 1
+ds_no2$covid = 0; 
+ds_no2$covid[ds_no2$Time >= "2020-03-09" & ds_no2$Time <= "2020-05-18"] =1
+
+colonne= c("Time", "AQ_no2" ,"WE_temp_2m" , "WE_tot_precipitation", "WE_rh_mean", "WE_surface_pressure","WE_solar_radiation", "WE_wind_speed_10m_mean","WE_wind_speed_100m_mean","WE_blh_layer_max","LI_bovine","WE_mode_wind_direction_10m","winter", "spring", "summer", "autumn",  "covid")
+ds_no2=ds_no2[, colonne]
+ds_no2 = ds_no2[order(ds_no2$Time), ]
+ds_no2$NO2_ieri = c(NA, ds_no2$AQ_no2[1:(nrow(ds_no2)-1)])
+
+ds_dyn2 = na.omit(ds_no2)
+
+ds2016_no2= ds_dyn2[ds_dyn2$Time >= first16 & ds_dyn2$Time <= last16, ]
+ds2017_no2= ds_dyn2[ds_dyn2$Time >= first17 & ds_dyn2$Time <= last17, ]
+ds2018_no2 = ds_dyn2[ds_dyn2$Time >= first18 & ds_dyn2$Time <= last18, ]
+ds2019_no2 = ds_dyn2[ds_dyn2$Time >= first19 & ds_dyn2$Time <= last19, ]
+ds2020_no2= ds_dyn2[ds_dyn2$Time >= first20 & ds_dyn2$Time <= last20, ]
+ds2021_no2= ds_dyn2[ds_dyn2$Time >= first21 & ds_dyn2$Time <= last21, ]
+
+```
+
+
+# **DESCRIZIONE DEL PROBLEMA E DEI DATI**
+
+Lo studio analizza le dinamiche di $NO_2$ e $PM_{10}$ presso la stazione
+di Dalmine (2016-2021), un'area della Pianura Padana critica per scarsa
+ventilazione. L'obiettivo è studiare l'effetto della stagione e della temperatura sull'inquinamento dell'aria, utilizzando tecniche di regressione lineare, cerchiamo quali modelli si adattano meglio alla rappresentazione dei dati.
+
+Lo studio è stato fatto sul dataset *Agrimonia*,contenente una raccolta di variabili ambientali, 
+meteorologiche e socio-economiche per il Nord Italia (2016–2021). Integra dati 
+ARPA, ERA5-Land e ISTAT con risoluzione giornaliera e a livello di stazione. Include 
+inquinanti atmosferici (PM10, PM2.5, NO2, O3), indicatori meteorologici e 
+descrittori socio-economici.
+Dopo aver sottoposto il dataset a
+**pulizia** (rimozione NA), selezioniamo le seguenti variabili:
+
+-   **Target:** `AQ_pm10`, `AQ_no2`.
+-   **Meteo:** Temperatura (`WE_temp_2m`), Precipitazioni (`WE_precipitation_tot`), Umidità (`WE_rh_mean`),
+    Pressione Atmosferica(`WE_surface_pressure`), Vento a 10 m e a 100 m (`WE_wind_speed_10m_mean` e `WE_wind_speed_100m_mean`), Strato Limite (`WE_blh_layer_max`), Radiazione Solare a onde corte (`WE_solar_radiation`), densità di capi bovini presenti nell'aria (`LI_bovine`). Non abbiamo usato la variabile `WE_precipitation_t` (variabile categorica) per evitare fenomeni di multicollinearità con la variabile quantitativa continua `WE_precipitation_tot`. 
+    
+-   **Feature Engineering:** Sono state create variabili **Dummy
+    Stagionali** (Inverno=Baseline) e una dummy **Covid** per il periodo
+    di blocco totale (Marzo-Maggio 2020).
+# Informazioni generali sugli inquinanti
+Il **biossido di azoto (NO2) **[1] si forma in massima parte in atmosfera per ossidazione del monossido (NO), inquinante principale che si forma nei processi di combustione. Le emissioni da fonti antropiche derivano sia da processi di combustione (centrali termoelettriche, riscaldamento, traffico), che da processi produttivi senza combustione (produzione di acido nitrico, fertilizzanti azotati, ecc.)
+
+Il termine **PM10** (particolato atmosferico o polveri sottili) identifica le particelle di diametro aerodinamico inferiore o uguale ai 10 μm. Il PM10 è presente nell’aria a seguito di:
+
+* 1. eventi naturali, come l’erosione, causata dal vento, di rocce ed altre superfici, la formazione di **aerosol marino**, le tempeste di polvere, gli incendi o la fuoriuscita di gas dai vulcani;
+
+* 2. attività umane che utilizzano **combustibili fossili o biomasse**, come nelle lavorazioni artigianali ed in quelle industriali (ad esempio nelle centrali termoelettriche, raffinerie, nelle industrie chimiche, del cemento e dell’acciaio), ma anche in attività quotidiane come cucinare, riscaldare, trasportare merci o utilizzare veicoli a motore. Il PM10 è infatti uno dei principali componenti dei gas di scarico degli autoveicoli, degli impianti industriali e delle emissioni portuali. 
+
+# **DATA ENGINEERING E PREPARAZIONE DEI DATI**
+
+La presente sezione descrive le procedure di trattamento e
+trasformazione dei dati grezzi, necessarie per garantire la robustezza
+statistica delle successive analisi di regressione. Il processo si è
+articolato in **pulizia**, **ordinamento cronologico** e **feature
+engineering**.
+
+## *Selezione del Campione e Data Cleaning*
+
+L’analisi è stata condotta su dataset distinti per ciascun inquinante
+(**$NO_2$** e **PM10**), al fine di massimizzare la numerosità
+campionaria.
+
+Al fine di preservare la corretta struttura temporale per le variabili lag, i valori mancanti non sono stati rimossi inizialmente.
+Si è proceduto prima all'ordinamento cronologico e al calcolo delle variabili ritardate sulla serie completa; solo successivamente sono state eliminate le osservazioni incomplete.
+Questo approccio garantisce che la relazione tra "oggi" e "ieri" sia fisicamente reale. Il campione finale valido risulta di **1939** osservazioni per il PM10 e **2056** per l’NO₂.
+
+```{r order, eval=FALSE, echo=TRUE}
+ds = ds[order(ds$Time), ]
+ds_no2$NO2_ieri = c(NA, ds_no2$AQ_no2[1:(nrow(ds_no2)-1)])
+
+ds_dyn2 = na.omit(ds_no2)
+
+```
+
+## ***Feature Engineering**: Stagionalità e Variabili di Intervento*
+
+Per modellare la ciclicità annuale degli inquinanti e gli shock esogeni,
+sono state costruite specifiche variabili dummy.
+
+### *Modellazione della Stagionalità:*
+
+Sono state generate variabili indicatrici per le stagioni (**Winter**,**Spring**,
+**Summer**, **Autumn**), derivate dal mese di osservazione.
+
+```{r seasons, eval=FALSE, echo=TRUE}
+# Creazione dummy stagionali (Winter = Baseline)
+ds$month = as.numeric(substr(ds$Time, 6, 7))
+ds$winter = 0
+ds$winter[ds$month >= 12 | ds$month <= 2] = 1
+ds$spring = 0
+ds$spring[ds$month >= 3 & ds$month <= 5] = 1
+ds$summer = 0
+ds$summer[ds$month >= 6 & ds$month <= 8] = 1
+ds$autumn = 0
+ds$autumn[ds$month >= 9 & ds$month <= 11] = 1
+
+
+```
+
+### *Variabile di Intervento (COVID-19):*
+
+Per isolare l'anomalia causata dalle restrizioni alla mobilità del 2020,
+è stata introdotta una variabile dummy **covid**, attiva nel periodo di
+lockdown totale nazionale (9 marzo – 18 maggio 2020). Questa finestra
+temporale corrisponde al periodo di: drastica riduzione del traffico e sospensione delle attività
+industriali non essenziali.
+
+```{r covid, eval=FALSE, echo=TRUE}
+ds$covid = 0
+ds$covid[ds$Time >= "2020-03-09" & ds$Time <= "2020-05-18"] = 1
+
+```
+
+L'inserimento di questa variabile permette di controllare
+statisticamente l'effetto di riduzione delle emissioni (traffico e
+attività industriali), evitando che tale periodo venga interpretato
+erroneamente dal modello come una fluttuazione casuale o meteorologica.
+
+### *Variabili Lag e Persistenza Atmosferica*
+
+Uno degli aspetti più rilevanti nella fisica dell'atmosfera è la
+**persistenza**: la concentrazione di inquinanti in un dato giorno
+dipende non solo dalle emissioni istantanee, ma anche dall'accumulo
+residuo del giorno precedente, specialmente in condizioni di scarsa
+ventilazione.
+
+Per integrare questa dinamica nel modello statistico, sono state create
+le variabili *lag* del primo ordine (**NO2_ieri** e **AQ_pm10_ieri**),
+traslando la serie storica di un giorno.
+
+```{r lag, eval=FALSE, echo=TRUE}
+# Costruzione della variabile lag (esempio NO2)
+ds$NO2_ieri = c(NA, ds$AQ_no2[1:(nrow(ds)-1)])
+ds_dyn = na.omit(ds) # Rimozione dell'osservazione iniziale divenuta NA
+
+```
+
+**Validazione Quantitativa della Scelta:** L'efficacia dell'introduzione
+delle variabili *lag* è stata verificata poi nella sezione [**Sviluppo Modelli **](#analisi-statistica), nel modello 4. 
+
+## *Stratificazione del Dataset (Subset Annuali)*
+
+La segmentazione annuale del dataset è stata fondamentale per isolare l'anomalia del 2020 e analizzare la distribuzione dei dati tramite istogrammi. Poiché la trasformazione logaritmica ha dimostrato una capacità di normalizzazione coerente in tutti i subset, è stato possibile adottare un unico assetto metodologico per l'intero arco 2016-2021, ottimizzando il processo di modellazione senza necessità di interventi differenziati per anno.
+
+
+
+# **ANALISI ESPLORATIVA (EDA)**
+
+Dopo aver preparato i dati, abbiamo condotto un'analisi esplorativa per comprenderne la distribuzione e le relazioni interne.
+
+## *Analisi della Distribuzione e Trasformazioni*
+L'analisi preliminare degli istogrammi ha evidenziato che la distribuzione originale degli inquinanti è fortemente asimmetrica (coda destra pronunciata). Il confronto tra diverse trasformazioni ha mostrato che la scala **logaritmica** è la più efficace per normalizzare i dati, rendendo la distribuzione simmetrica e "a campana", ideale per l'applicazione dei GLM.
+*Nota:* Nel 2020, la distribuzione logaritmica dell'$NO_2$ appare leggermente bimodale, un segnale visivo dell'anomalia introdotta dal lockdown.
+
+
+
+<button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#collapsePM10_Old" aria-expanded="false" aria-controls="collapsePM10_Old">
+  PM10: Trend Storico (2016-2019)
+</button>
+
+<div class="collapse" id="collapsePM10_Old">
+  <div class="card card-body">
+```{r, echo=FALSE}
+par(mfrow=c(4,3), mar=c(1.5, 1.5, 1.5, 0.5))
+anni_old = c(2016, 2017, 2018, 2019)
+datasets_old = list(ds2016, ds2017, ds2018, ds2019)
+
+for(i in 1:4) {
+  df = datasets_old[[i]]
+  anno = anni_old[i]
+  hist(df$AQ_pm10, main=paste(anno, ": Orig"), col="#880e4f", border="white", prob=TRUE, xlab="")
+  
+lines(density(df$AQ_pm10), col="#f06292", lwd=1.5)
+
+hist(sqrt(df$AQ_pm10), main=paste(anno, ": Sqrt"), col="#ad1457", border="white", prob=TRUE, xlab="")
+
+lines(density(sqrt(df$AQ_pm10)), col="#f48fb1", lwd=1.5)
+
+hist(log(df$AQ_pm10), main=paste(anno, ": Log"), col="#d81b60", border="white", prob=TRUE, xlab="")
+  
+lines(density(log(df$AQ_pm10)), col="#fce4ec", lwd=1.5)
+}
+```
+
+</div>
+</div>
+<button class="btn btn-danger btn-sm" type="button" data-toggle="collapse" data-target="#collapsePM10_Cov" aria-expanded="false" aria-controls="collapsePM10_Cov" style="margin-left: 10px;">
+PM10: Focus Covid & Post (2020-2021)
+</button>
+<div class="collapse" id="collapsePM10_Cov">
+<div class="card card-body">
+```{r, echo=FALSE}
+par(mfrow=c(2,3), mar=c(1.5, 1.5, 1.5, 0.5))
+anni_cov = c(2020, 2021)
+datasets_cov = list(ds2020, ds2021)
+for(i in 1:2) {
+df = datasets_cov[[i]]
+anno = anni_cov[i]
+hist(df$AQ_pm10, main=paste(anno, ": Orig"),col="#880e4f", border="white", prob=TRUE, xlab="")
+lines(density(df$AQ_pm10), col="#f06292", lwd=1.5)
+
+hist(sqrt(df$AQ_pm10), main=paste(anno, ": Sqrt"), col="#ad1457", border="white", prob=TRUE, xlab="")
+lines(density(sqrt(df$AQ_pm10)), col="#f48fb1", lwd=1.5)
+
+hist(log(df$AQ_pm10),main=paste(anno, ": Log"), col="#d81b60", border="white", prob=TRUE, xlab="")
+lines(density(log(df$AQ_pm10)), col="#fce4ec", lwd=1.5)
+} 
+```
+
+</div>
+</div>
+<button class="btn btn-info btn-sm" type="button" data-toggle="collapse" data-target="#collapseNO2_Old" aria-expanded="false" aria-controls="collapseNO2_Old">
+  NO2: Trend Storico (2016-2019)
+</button>
+
+<div class="collapse" id="collapseNO2_Old">
+  <div class="card card-body">
+```{r echo=FALSE, fig.height=8, fig.width=8}
+par(mfrow=c(4,3), mar=c(1.5, 1.5, 1.5, 0.5))
+datasets_no2_old = list(ds2016_no2, ds2017_no2, ds2018_no2, ds2019_no2)
+anni_old = c(2016, 2017, 2018, 2019)
+for(i in 1:4) {
+  df = datasets_no2_old[[i]]
+  anno = anni_old[i]
+  hist(df$AQ_no2, main=paste(anno, ": Orig"), col="#880e4f", border="white", prob=TRUE, xlab="")
+lines(density(df$AQ_no2), col="#f06292", lwd=1.5)
+
+  hist(sqrt(df$AQ_no2), main=paste(anno, ": Sqrt"), col="#ad1457", border="white", prob=TRUE, xlab="") 
+  lines(density(sqrt(df$AQ_no2)), col="#f48fb1", lwd=1.5)
+  
+  hist(log(df$AQ_no2), main=paste(anno, ": Log"), col="#d81b60", border="white", prob=TRUE, xlab="") 
+  lines(density(log(df$AQ_no2)), col="#fce4ec", lwd=1.5)
+}
+```
+
+</div>
+</div>
+
+<button class="btn btn-danger btn-sm" type="button" data-toggle="collapse" data-target="#collapseNO2_Cov" aria-expanded="false" aria-controls="collapseNO2_Cov" style="margin-left: 10px;">
+NO2: Focus Covid & Post (2020-2021)
+</button>
+<div class="collapse" id="collapseNO2_Cov">
+<div class="card card-body">
+```{r, echo=FALSE, fig.height=5, fig.width=8}
+par(mfrow=c(2,3), mar=c(1.5, 1.5, 1.5, 0.5))
+datasets_no2_cov = list(ds2020_no2, ds2021_no2)
+anni_cov=c(2020,2021)
+for(i in 1:2) {
+df = datasets_no2_cov[[i]]
+anno = anni_cov[i]
+
+hist(df$AQ_no2,lwd=1.5, main=paste(anno, ": Orig"), col="#880e4f", border="white", prob=TRUE, xlab="")
+lines(density(df$AQ_no2), col="#f06292", lwd=1.5)
+
+hist(sqrt(df$AQ_no2),lwd=1.5, main=paste(anno, ": Sqrt"),col="#ad1457", border="white", prob=TRUE, xlab="")
+lines(density(sqrt(df$AQ_no2)), col="#f48fb1", lwd=1.5)
+
+hist(log(df$AQ_no2),lwd=1.5, main=paste(anno, ": Log"),col="#d81b60", border="white", prob=TRUE, xlab="")
+lines(density(log(df$AQ_no2)), col="#fce4ec", lwd=1.5)
+}
+```
+</div>
+</div>
+
+## *Analisi delle correlazioni*
+Prima di procedere alla modellazione, è fondamentale esaminare le relazioni lineari tra le variabili per individuare i driver principali dell'inquinamento e potenziali problemi di multicollinearità (variabili ridondanti).
+```{r,  echo=FALSE, fig.height=3.5, fig.width=9}
+# 1. Definizione nomi accorciati per leggibilità
+short_names <- c("Target", "Temp", "Rain", "Rh", "Press", "Solar", "BLH", "Bovine", "Wind10", "Wind100")
+
+# 2. Matrice PM10
+cols_pm10 <- c("AQ_pm10", "WE_temp_2m", "WE_tot_precipitation", "WE_rh_mean", 
+               "WE_surface_pressure", "WE_solar_radiation", "WE_blh_layer_max", 
+               "LI_bovine", "WE_wind_speed_10m_mean","WE_wind_speed_100m_mean")
+M_pm10 = cor(ds_dyn1[, cols_pm10])
+colnames(M_pm10) <- rownames(M_pm10) <- short_names # Rinomino
+
+# 3. Matrice NO2
+cols_no2 <- c("AQ_no2", "WE_temp_2m", "WE_tot_precipitation", "WE_rh_mean", 
+              "WE_surface_pressure", "WE_solar_radiation", "WE_blh_layer_max", 
+              "LI_bovine", "WE_wind_speed_10m_mean","WE_wind_speed_100m_mean")
+M_no2 = cor(ds_dyn2[, cols_no2])
+colnames(M_no2) <- rownames(M_no2) <- short_names # Rinomino
+
+# 4. Plot affiancati
+par(mfrow=c(1,2), mar=c(1, 1, 2, 1)) # Margini ridotti
+
+# Plot PM10
+corrplot(M_pm10, method="color", type="upper", 
+         addCoef.col = "black", # Aggiunge i numeri
+         tl.col="black", tl.cex=0.7, # Testo assi piccolo
+         number.cex=0.6, # Numeri piccoli
+         title="Correlazioni PM10", mar=c(0,0,1,0), diag=FALSE)
+
+# Plot NO2
+corrplot(M_no2, method="color", type="upper", 
+         addCoef.col = "black", 
+         tl.col="black", tl.cex=0.7, 
+         number.cex=0.6, 
+         title="Correlazioni NO2", mar=c(0,0,1,0), diag=FALSE)
+```
+
+**Interpretazione delle Correlazioni:**
+
+1.  **Rischio Multicollinearità:** Emerge un forte legame positivo ($r > 0.70$) tra **Temperatura** e **Radiazione Solare**. Questo suggerisce che inserire entrambe nel modello potrebbe creare ridondanza (confermato poi dall'analisi VIF).
+2.  **Dinamica dei Venti:** I venti a 10m e 100m sono quasi perfettamente correlati ($r = 0.85$), indicando che catturano la stessa dinamica fisica di trasporto (successivamente si vedrà che hanno segni opposti)
+3.  **Effetto Dispersivo:** Sia lo Strato Limite (**BLH**) che il Vento mostrano correlazioni negative (colore blu) con gli inquinanti, confermando il loro ruolo fisico di "pulizia" dell'atmosfera tramite dispersione verticale e orizzontale.
+
+**Stagionalità NO2:** La forte correlazione negativa tra Temperatura e NO2 ($-0.70$) riflette il ciclo stagionale: in inverno (basse temperature) le emissioni aumentano e il ristagno atmosferico intrappola gli inquinanti.
+
+## *Stagionalità (Boxplot)*
+L'analisi grafica tramite boxplot conferma un ciclo annuale marcato per entrambi gli inquinanti:
+*   **Inverno:** Massime concentrazioni, favorite dalle frequenti inversioni termiche che schiacciano gli inquinanti al suolo.
+*   **Estate:** Minimi annuali, grazie alla maggiore dispersione verticale e, per l'$NO_2$, alla degradazione fotochimica.
+
+```{r boxplot, fig.height=4, fig.width=9, echo=FALSE}
+ds_dyn1$Season = factor(ifelse(ds_dyn1$winter==1, "Inverno", ifelse(ds_dyn1$spring==1, "Primavera", 
+                                                          ifelse(ds_dyn1$summer==1, "Estate", "Autunno"))),
+                   levels=c("Estate", "Autunno", "Inverno", "Primavera"))
+par(mfrow=c(1,2))
+boxplot(AQ_pm10 ~ Season, data=ds_dyn1, 
+        main="PM10 per Stagione a Dalmine",
+        col=c("lightyellow", "pink", "magenta", "purple"),
+        ylab="µg/m3")
+ds_dyn2$Season = factor(ifelse(ds_dyn2$winter==1, "Inverno", ifelse(ds_dyn2$spring==1, "Primavera", 
+                                                          ifelse(ds_dyn2$summer==1, "Estate", "Autunno"))),
+                   levels=c("Estate", "Autunno", "Inverno", "Primavera"))
+
+boxplot(AQ_no2 ~ Season, data=ds_dyn2, 
+        main="NO2 per Stagione a Dalmine",
+        col=c("lightyellow", "pink", "magenta", "purple"),
+        ylab="µg/m3")
+```
+
+# **ANALISI STATISTICA**{.tabset .tabset-fade .tabset-pills}
+
+<div style="margin-bottom: 20px;">
+In questa parte del progetto abbiamo cercato di capire quali variabili spiegano meglio l'inquinamento. Non abbiamo costruito un modello unico fin dall'inizio, ma abbiamo proceduto per gradi, un passo alla volta, per vedere come miglioravano i risultati e l'errore sistematico ogni volta che aggiungevamo nuove informazioni.
+
+Cliccando sui pulsanti **"ANALISI PM10"** o **"ANALISI $NO_2$"**, è possibile vedere il percorso di modellizzazione (dal modello 1 al modello 4 cliccando sui rispettivi pulsanti).
+</div>
+
+
+## ANALISI PM10 {.tabset}
+### Modello 1: Baseline Stagionale
+
+Il percorso di modellizzazione inizia con la definizione di una **baseline**, ovvero un modello che isola l'impatto del solo fattore temporale. Per gestire l'**eteroschedasticità** (varianza crescente con la media) e la natura strettamente **positiva** degli inquinanti, abbiamo implementato un **GLM Gamma con link Log**. Impostando **l'Inverno come categoria di riferimento**, i coefficienti delle altre stagioni quantificano direttamente il miglioramento relativo della qualità dell'aria.
+
+```{r, echo=FALSE}
+library(broom); 
+library(knitr); 
+library(kableExtra)
+
+m1_pm10=glm(AQ_pm10 ~ spring+summer+autumn, family=Gamma(link="log"), data=ds_dyn1)
+
+kable(tidy(m1_pm10), digits=4, caption="Risultati Modello 1 PM10") %>% kable_styling(bootstrap_options = "condensed", full_width = T) %>% 
+  row_spec(0, background = "#F3CCEC", color = "white")
+```
+
+I risultati mostrano una stagionalità altamente significativa ($p<0.001$).
+Il modello stima un picco invernale di **45.6 µg/m³** ($e ^ (3.82)$) e un abbattimento estivo del **58%** (coeff. -0.88). Tale dinamica riflette la fine del periodo di riscaldamento domestico e la rottura dell'[**inversione termica invernale**](https://www.arpa.piemonte.it/voce-glossario/inversione-termica), che a Dalmine funge da trappola fisica per le polveri sospese.
+
+### Modello 2 & 3: Inserimento variabili
+
+In questa fase intermedia abbiamo inserito tutte le **covariate meteorologiche** (vento, pioggia, radiazione, ecc.) e antropiche (densità bovina, Covid) per controllare gli effetti fisici (Modello 2). Prima di procedere alla selezione, abbiamo verificato la **multicollinearità** tramite il VIF (Variance Inflation Factor).
+
+
+```{r, echo= FALSE}
+m2_pm10 = glm(AQ_pm10 ~ spring + summer + autumn + WE_temp_2m + WE_tot_precipitation + 
+                WE_rh_mean + WE_surface_pressure + WE_solar_radiation + 
+                WE_wind_speed_10m_mean + WE_wind_speed_100m_mean + 
+                WE_blh_layer_max + LI_bovine + covid, 
+              family = Gamma(link = "log"), data = ds_dyn1)
+vif_val = vif(m2_pm10)
+vif_high = vif_val[vif_val > 5] 
+df_vif = data.frame(Variabile = names(vif_high), VIF = as.numeric(vif_high))
+
+kable(df_vif, digits=2) %>%
+  kable_styling(bootstrap_options = "condensed", full_width = F, position = "float_left")%>%
+column_spec(1, bold = T)%>%row_spec(nrow(df_vif), extra_css = "border-bottom: 2px solid #ddd;")
+m3_pm10= step(m2_pm10, direction="both", trace=0)
+
+```
+
+
+Si nota che **Radiazione Solare** e **Temperatura** hanno valori VIF **moderatamente alti (>6)**, suggerendo una ridondanza informativa.
+
+Successivamente, l'algoritmo Stepwise (AIC) (Modello 3) ha confermato questa indicazione rimuovendo la **Temperatura**(assorbita dalla Radiazione) e la variabile **Covid** .Le variabili meteo rimaste (Vento, Pioggia, Pressione) risultano tutte significative e l'AIC scende nettamente (**14.729**), garantendo un controllo efficace dei fattori fisici.
+
+
+### Modello 4: Modello Dinamico
+
+Dopo lo Stepwise, ci siamo accorte che il nostro modello poteva essere ancora migliorato.
+Infatti, l'analisi condotta fino a questo punto era di tipo "statico": guardavamo
+solo il meteo di oggi per prevedere lo smog di oggi. Tuttavia,
+l'inquinamento atmosferico è un sistema dotato di **inerzia fisica**: se
+l'aria è sporca ieri, lo sarà probabilmente anche oggi. Per questo
+abbiamo evoluto la ricerca verso un **Modello Dinamico**, inserendo la
+variabile della concentrazione degli inquinanti del giorno prima come
+colonna.
+
+```{r, echo=FALSE}
+m4_pm10=glm(AQ_pm10 ~ spring+summer+autumn+ WE_tot_precipitation + WE_rh_mean + WE_surface_pressure+ WE_wind_speed_10m_mean + WE_wind_speed_100m_mean + WE_blh_layer_max+ LI_bovine + PM10_ieri, family=Gamma(link="log"), data=ds_dyn1)
+
+```
+
+L'AIC è sceso drasticamente (**13934**), suggerendo quindi che è stata una buona scelta aggiungere la colonna del dato del giorno prima. Infatti si nota che il PM10_ieri risulta essere la variabile più significativa di tutte ($statistic=32.1168$)
+
+### Modello 5: Interazione
+
+Nonostante le ottime performance del Modello Dinamico, l'analisi teorica suggeriva che la temperatura agisce in modo diverso a seconda della stagione (effetto camino in inverno vs fotolisi in estate).
+Abbiamo quindi testato un quinto modello che unisce l'inerzia atmosferica (Lag) con l'interazione Stagione*Temperatura.
+L'AIC è sceso ulteriormente a **13879**, confermando che questo modello rappresenta la miglior approssimazione possibile della realtà fisica di Dalmine. Le variabili di interazione sono risultate significative, indicando che la risposta degli inquinanti al calore non è costante durante l'anno.
+
+```{r, echo=FALSE}
+ds_dyn1$Season = factor(ifelse(ds_dyn1$winter==1, "Inverno", ifelse(ds_dyn1$spring==1, "Primavera", 
+                                                          ifelse(ds_dyn1$summer==1, "Estate", "Autunno"))),
+                   levels=c("Estate", "Autunno", "Inverno", "Primavera"))
+
+m5_pm10 = glm(AQ_pm10 ~ Season * WE_temp_2m + 
+                WE_tot_precipitation + 
+                WE_rh_mean + 
+                WE_surface_pressure + 
+                WE_solar_radiation + 
+                WE_wind_speed_10m_mean + 
+                WE_wind_speed_100m_mean + 
+                WE_blh_layer_max + 
+                LI_bovine + 
+                PM10_ieri, 
+              family=Gamma(link="log"), data=ds_dyn1)
+
+
+kable(tidy(m5_pm10), digits=4, caption="Risultati Modello 5 PM10") %>% kable_styling(bootstrap_options = "condensed", full_width = T, font_size=11, position="center") %>% 
+  row_spec(0, background = "#F3CCEC", color = "white", bold=T)
+```
+
+## Analisi $NO_2$ {.tabset}
+### Modello 1:Baseline Stagionale
+
+Come per il PM10 ,il percorso di modellizzazione inizia con la definizione di una baseline, ovvero un modello che isola l’impatto del solo fattore temporale. Per gestire l’eteroschedasticità (varianza crescente con la media) e la natura strettamente positiva degli inquinanti, abbiamo implementato un **GLM Gamma con link Log**. Impostando **l’Inverno come categoria di riferimento**, i coefficienti delle altre stagioni quantificano direttamente il miglioramento relativo della qualità dell’aria.
+
+
+```{r, echo=FALSE }
+m1_no2=glm(AQ_no2 ~ spring+summer+autumn, family=Gamma(link="log"), data=ds_dyn2)
+kable(tidy(m1_no2), digits=4, caption="Risultati Modello 1 NO2") %>% kable_styling(bootstrap_options = "condensed", full_width = T) %>% 
+  row_spec(0, background = "#F3CCEC", color = "white")
+```
+
+L'NO2 mostra una sensibilità stagionale ancora superiore al PM10 (**-64.5% in estate**). Oltre al rimescolamento fisico, qui agisce la [**fotolisi**](https://it.wikipedia.org/wiki/Fotolisi) (decomposizione chimica indotta dal sole) che "pulisce" l'aria
+
+### Modello 2 & 3: Inserimento variabili 
+
+In questa fase abbiamo integrato nel sistema le covariate meteorologiche e antropiche (Modello 2) e poi verificato la multicollinearità tramite il VIF. Successivamente abbiamo eseguito uno Stepwise (Modello 3) per togliere le variabili ridondanti. 
+
+```{r modello no2, echo=FALSE, fig.height=4, fig.width=8}
+m2_no2=glm(AQ_no2 ~ spring + summer + autumn + WE_temp_2m + WE_tot_precipitation + WE_rh_mean + WE_surface_pressure +WE_solar_radiation + WE_wind_speed_10m_mean + WE_wind_speed_100m_mean + WE_blh_layer_max+ LI_bovine+ covid, family=Gamma(link="log"), data=ds_dyn2)
+
+
+vif_val_no = vif(m2_no2)
+vif_high_no = vif_val_no[vif_val_no > 5]
+df_vif_no = data.frame(Variabile = names(vif_high_no), VIF = as.numeric(vif_high_no))
+
+kable(df_vif_no, digits=2) %>%
+  kable_styling(bootstrap_options = "condensed", full_width = F, position = "float_left") %>%
+  column_spec(1, bold = T, border_right = "15px solid white")
+m3_no2 = step(m2_no2, direction="both", trace=0)
+```
+
+Anche qui, **Radiazione e Temperatura** mostrano colinearità (VIF > 6).
+Tuttavia, a differenza del PM10, la selezione Stepwise ha rimosso la **Radiazione Solare** mantenendo la **Temperatura (WE_temp_2m)**, che risulta altamente significativa e negativa.
+Inoltre, la variabile ***Covid** è sopravvissuta alla selezione: il lockdown ha abbattuto l'NO2 in modo distinto dal meteo. L'AIC migliora drasticamente (**14.288**).
+
+
+### Modello 4: Il modello dinamico
+
+Dopo lo Stepwise anche qui ci siamo accorte che l'analisi condotta fino a questo punto era di tipo "statico": guardavamo
+solo il meteo di oggi per prevedere lo smog di oggi. Tuttavia,
+l'inquinamento atmosferico è un sistema dotato di **inerzia fisica**: se
+l'aria è sporca ieri, lo sarà probabilmente anche oggi. Per questo
+abbiamo evoluto la ricerca verso un **Modello Dinamico**, inserendo la
+variabile della concentrazione degli inquinanti del giorno prima come
+colonna. 
+
+
+```{r modello 4 pm10, echo=FALSE, fig.height=4, fig.width=8}
+
+m4_no2=glm (AQ_no2  ~ spring+summer+autumn+WE_temp_2m+ WE_tot_precipitation + WE_rh_mean + WE_surface_pressure+ WE_wind_speed_10m_mean + WE_wind_speed_100m_mean + WE_blh_layer_max+ LI_bovine + covid+ NO2_ieri, family=Gamma(link="log"), data=ds_dyn2)
+```
+
+Grazie all'introduzione di questa colonna, notiamo una riduzione dell'AIC che passa ad essere **13.367**. 
+In questo modello notiamo  che la variabile più significativa di tutte è proprio la colonna con i dati del giorno prima ($statistic=35.1531$). Ciò indica quindi che Dalmine soffre di un forte **effetto accumulo**.
+
+### Modello 5 
+
+Nonostante le ottime performance del Modello Dinamico, l'analisi teorica suggeriva che la temperatura agisce in modo diverso a seconda della stagione (effetto camino in inverno vs fotolisi in estate).
+Abbiamo quindi testato un quinto modello che unisce l'inerzia atmosferica (Lag) con l'interazione Stagione*Temperatura.
+L'AIC è sceso ulteriormente a , confermando che questo modello rappresenta la miglior approssimazione possibile della realtà fisica di Dalmine. Le variabili di interazione sono risultate significative, indicando che la risposta degli inquinanti al calore non è costante durante l'anno
+```{r, echo=FALSE}
+ds_dyn2$Season = factor(ifelse(ds_dyn2$winter==1, "Inverno", ifelse(ds_dyn2$spring==1, "Primavera", 
+                                                          ifelse(ds_dyn2$summer==1, "Estate", "Autunno"))),
+                   levels=c("Estate", "Autunno", "Inverno", "Primavera"))
+m5_no2 = glm(AQ_no2 ~ Season * WE_temp_2m + 
+               WE_tot_precipitation + 
+               WE_rh_mean + 
+               WE_surface_pressure + 
+               WE_wind_speed_10m_mean + 
+               WE_wind_speed_100m_mean + 
+               WE_blh_layer_max + 
+               LI_bovine + 
+               covid + 
+               NO2_ieri, 
+             family=Gamma(link="log"), data=ds_dyn2)
+kable(tidy(m5_no2), digits=4, caption="Risultati Modello 5 NO2") %>% kable_styling(bootstrap_options = "condensed", full_width = T, font_size=11, position="center") %>% 
+  row_spec(0, background = "#F3CCEC", color = "white", bold=T)
+```
+
+
+# {-} 
+
+# **CONFRONTO AIC** {.tabset .tabset-fade .tabset-pills}
+
+Il **criterio AIC (Akaike Information Criterion)** è una metrica statistica utilizzata per confrontare diversi modelli: un valore di AIC inferiore indica un modello che riesce a spiegare meglio i dati utilizzando il minor numero possibile di variabili (principio di parsimonia).
+Dall'analisi della tabella emerge una tendenza chiara per entrambi gli inquinanti: man mano che il modello viene raffinato, il valore dell'AIC diminuisce costantemente. Il miglioramento più significativo si osserva con il passaggio al **Modello 5 (Dinamico con Interazione)**.
+
+## AIC PM10
+
+```{r, echo=FALSE}
+tab_pm10 <- data.frame(
+  Modello = c("Modello 1: Baseline Stagionale", 
+              "Modello 2: Tutte le Covariate", 
+              "Modello 3: Selezione Stepwise", 
+              "Modello 4: Modello Dinamico (Lag) ", "Modello 5: Interazione"),
+  AIC = c(AIC(m1_pm10), AIC(m2_pm10), AIC(m3_pm10), AIC(m4_pm10), AIC(m5_pm10))
+)
+
+library(kableExtra)
+
+kable(tab_pm10, 
+      digits = 1, 
+      format.args = list(big.mark = "."),
+      align = "lc",
+      col.names = c("Descrizione Modello", "Valore AIC")) %>%
+  kable_styling(bootstrap_options = c("hover"), 
+                full_width = TRUE, 
+                font_size = 22) %>% 
+  row_spec(0, background = "#F2DBE9", color = "white", bold = TRUE) %>% 
+  row_spec(5, background = "#F3CCEC", bold = TRUE, color = "#ad1457") %>% 
+  column_spec(1, width = "70%") %>%
+  column_spec(2, width = "30%", bold = TRUE)
+```
+
+## AIC $NO_2$
+
+```{r, echo=FALSE}
+tab_no2 <- data.frame(
+  Modello = c("Modello 1: Baseline Stagionale", 
+              "Modello 2: Tutte le Covariate", 
+              "Modello 3: Selezione Stepwise", 
+              "Modello 4: Modello Dinamico (Lag)", "Modello 5: Interazione"),
+  AIC = c(AIC(m1_no2), AIC(m2_no2), AIC(m3_no2), AIC(m4_no2), AIC(m5_no2))
+)
+
+kable(tab_no2, 
+      digits = 1, 
+      format.args = list(big.mark = "."),
+      align = "lc",
+      col.names = c("Descrizione Modello", "Valore AIC")) %>%
+  kable_styling(bootstrap_options = c("hover"), 
+                full_width = TRUE, 
+                font_size = 22) %>% # Tabella molto grande
+  row_spec(0, background = "#F2DBE9", color = "white", bold = TRUE) %>% 
+  row_spec(5, background = "#F3CCEC", bold = TRUE, color = "#ad1457") %>%
+  column_spec(1, width = "70%") %>%
+  column_spec(2, width = "30%", bold = TRUE)
+```
+
+# {-}
+
+Poiché il Modello 5 presenta il valore AIC più basso in assoluto sia per il PM10 che per l'$NO_2$ è stato selezionato come modello definitivo per la successiva fase di diagnostica e per le valutazioni finali sulla qualità dell'aria.
+
+# **DIAGNOSTICA DEI RESIDUI**
+
+In questa sezione verifichiamo la bontà dei modelli dinamici con **Interazione** (Modello 5), che hanno mostrato le performance migliori in termini di AIC. L'analisi dei residui è fondamentale per confermare che le assunzioni del modello GLM Gamma siano rispettate.
+ NO2 presso la stazione di Dalmine.
+
+## *Diagnostica PM10*
+
+```{r diag_pm10, echo=FALSE, fig.align='center', fig.width=10, fig.height=6}
+
+par(mfrow=c(2,2), mar=c(4, 4, 2, 1)) 
+plot(m5_pm10, col="magenta", pch=20, cex=0.6)
+```
+
+**Interpretazione dei Grafici:**
+
+* **Resid vs Fitted**: La linea rossa è orizzontale e centrata sullo zero. Le lievi curvature indicano che la struttura principale è stata catturata correttamente. La lieve curvatura verso il basso all'estrema destra suggerisce una leggera difficoltà nel predire i picchi massimi assoluti, fenomeno comune nei dati ambientali.
+
+* **Normal Q-Q**:Ottima aderenza sulla bisettrice. La deviazione sulla coda destra indica una tendenza a sottostimare i picchi estremi (limite fisico del modello), ma non influenza la validità generale.
+
+* **Scale-Location**:La distribuzione uniforme dei punti conferma l'omoschedasticità
+
+* **Resid vs Leverage**: Nessuna osservazione supera la distanza di Cook (linee tratteggiate esterne), confermando l'assenza di outlier pericolosi che potrebbero distorcere il modello. Sebbene ci siano alcune osservazioni con leva alta (es. punti 7609, 8592), nessuna di esse ha un'influenza sproporzionata tale da distorcere i coefficienti del modello
+
+## *Diagnostica NO2*
+
+```{r no2_model, echo=FALSE, fig.align='center', fig.width=10, fig.height=6}
+par(mfrow=c(2,2),mar=c(4,4,2,1))
+
+plot(m5_no2, col="magenta", pch=20, cex=0.6)
+```
+
+**Interpretazione dei Grafici:**
+
+* **Resid vs Fitted**: Il grafico mostra un risultato quasi ideale. La linea rossa di tendenza è perfettamente orizzontale e coincidente con lo zero sull'asse delle ordinate. A differenza del PM10, qui non si notano curvature residue significative: l'interazione Stagione per Temperatura ha modellato correttamente le variazioni chimiche dell'NO2 senza lasciare trend non spiegati.
+
+* **Normal Q-Q**:L'aderenza alla bisettrice tratteggiata è estremamente elevata per gran parte della distribuzione. Si nota, come per il PM10, una deviazione nella coda destra estrema (punti 7651, 7715), indicando che i picchi massimi assoluti di inquinamento sono leggermente più alti di quanto previsto da una distribuzione Gamma teorica. Tuttavia, il "corpo" dei dati è perfettamente allineato.
+
+* **Scale-Location**:Nessun segnale evidente di eteroschedasticità
+
+* **Resid vs Leverage**: Il modello risulta robusto: l'assenza di punti oltre la distanza di Cook conferma che le stime dei coefficienti non sono pilotate da singole osservazioni anomale.
+
+## *Verdetto Finale*
+L'analisi diagnostica conferma la piena validità statistica del Modello 5 per entrambi gli inquinanti. L'assenza di trend sistematici nei residui e la stabilità della varianza dimostrano che l'architettura scelta cattura correttamente le dinamiche fisiche senza violare le assunzioni di base, rendendo i risultati finali robusti e affidabili.
+
+# **CONCLUSIONI**
+
+L’obiettivo centrale di questo studio era determinare **l'impatto della stagione e della temperatura sulla qualità dell'aria a Dalmine**. L'osservazione del **Modello 5** ci permette di trarre conclusioni che vanno oltre la semplice osservazione stagionale, evidenziando la natura dinamica e non-lineare dell'inquinamento nella Pianura Padana.
+
+Il confronto tramite AIC ha decretato il Modello 5 come il più performante. Questo risultato ci dice due cose fondamentali sulla fisica dell'atmosfera locale:
+
+* **L'importanza dell'Inerzia (Effetto Lag)**: L'inserimento della concentrazione del giorno precedente (PM10_ieri e NO2_ieri) si è rivelato la componente statistica più significativa. Ciò dimostra che l'aria a Dalmine soffre di un forte effetto accumulo: l'inquinamento di oggi dipende fortemente da quello di ieri. Questo riflette la **scarsa capacità dispersiva** della Pianura Padana, che agisce come una "vasca" dove gli inquinanti ristagnano **se non intervengono forti venti o piogge**.
+
+* **L'Effetto non costante della Temperatura (Interazione)**: L'aver modellato l'interazione Stagione * Temperatura ci ha permesso di capire che il calore non agisce sempre allo stesso modo. Un aumento di temperatura in inverno (spesso associato a inversioni termiche e stabilità) ha **implicazioni diverse rispetto a un aumento in estate** (associato a forte irraggiamento solare e convezione). Il modello ha catturato questa complessità, correggendo le stime che un modello lineare semplice avrebbe sbagliato.
+
+* **Differenze tra gli inquinanti**
+Nonostante entrambi seguano un ciclo stagionale con picchi invernali e minimi estivi (fino al -64% per l’$NO_2$):
+* $NO_2$: Risente maggiormente della fotolisi. L'interazione tra alta insolazione estiva e temperatura accelera le reazioni chimiche che distruggono l'$NO_2$, ripulendo l'aria. Inoltre, il drastico calo durante il Lockdown 2020 (confermato dalla variabile covid significativa) prova il legame diretto con il traffico veicolare.
+
+* $PM10$: È dominato dalla fisica dell'atmosfera. Le basse temperature invernali abbassano lo strato limite planetario (BLH), schiacciando le polveri al suolo. A differenza dell'$NO_2$,  il PM10 ha risentito meno del lockdown, si evince che è influenzato anche da agricoltura e allevamenti intensivi.
+
+
+
+# **BIBLIOGRAFIA E RIFERIMENTI TECNICI**
+
+La redazione del presente report ha richiesto l'integrazione di fonti scientifiche per l'analisi ambientale, documentazione tecnica per lo sviluppo in linguaggio R e risorse di web design per l'ottimizzazione dell'output HTML.
+
+### *Fonti dei Dati e Metodologia Statistica*
+*   **Marras, G., et al.** *Agrimonia: a multi-source dataset for air quality and agriculture in Lombardy.* Scientific Data (Nature Portfolio). Fonte primaria per i dati di qualità dell'aria e variabili meteorologiche della Lombardia. 
+
+* **Agresti, A. & Kateri, M.** *Statistica per data scientists: con R e Python*. Edizione italiana a cura di F. Corradi. Milano: EGEA, 2022. Testo di riferimento per i principi di inferenza statistica, la modellazione dei dati e l'integrazione delle librerie di analisi in ambiente R.
+
+
+
+### *Fisica dell'Atmosfera e Dinamiche Ambientali*
+*   **ARPA Veneto.** *Inquinanti Atmosferici: Proprietà e sorgenti di $NO_2$ e $PM_{10}$.* Analisi delle sorgenti primarie e dei processi di combustione legati al traffico e al riscaldamento. [Consulta gli approfondimenti](https://www.arpa.veneto.it/temi-ambientali/aria/qualita-dellaria/approfondimenti/inquinanti-atmosferici/).
+*   **ARPA Piemonte.** *Glossario Meteo: Dinamiche dell'inversione termica.* Studio dei fenomeni di stabilità atmosferica e del loro impatto sull'altezza dello strato limite (**BLH**). [Definizione tecnica](https://www.arpa.piemonte.it/voce-glossario/inversione-termica).
+*   **Aria-Net Srl.** *Risospensione meccanica e modelli di dispersione atmosferica.* Approfondimento sul ruolo del vento a bassa quota nella movimentazione del particolato depositato al suolo. [Analisi del modello SPRAY](https://www.aria-net.it/it/integrazione-di-un-modello-di-risospensione-dinamico-nuove-prospettive-per-il-codice-spray/).
+*   **ScienceDirect (Elsevier).** *Atmospheric Environment: The wash-out effect of precipitation.* Analisi della correlazione inversa tra precipitazioni e concentrazioni di polveri sottili. [Studio scientifico](https://www.sciencedirect.com/science/article/abs/pii/S1352231025004881).
+*   **Learn About World** *Fotolisi e reazioni chimiche indotte dal sole.* [Definizione ed effetti](https://it.learnaboutworld.com/article/fotlisis).
+
+### *Sviluppo Software e Visual Design*
+
+* **R Core Team. R: A Language and Environment for Statistical Computing**. Riferimento principale per il linguaggio di programmazione, le funzioni di ordinamento cronologico e la gestione statistica dei dati. [Sito R] (https://cran.r-project.org/)
+
+* **Wickham, H., et al. The Tidyverse Ecosystem.** Utilizzo delle librerie integrate per la manipolazione dei risultati dei modelli tramite la funzione tidy().[Sito](https://tidyverse.org/packages/)
+
+*   **Taiyun Wei & Viliam Simko.** *Package 'corrplot'.* Documentazione per la generazione della matrice di correlazione grafica utilizzata nella fase di **EDA**. [Documentazione CRAN](https://cran.r-project.org/web/packages/corrplot/).
+
+*   **Zhu, H.** *Package 'kableExtra'.* Risorsa per la formattazione avanzata delle tabelle in R Markdown, inclusi i comandi `kable_styling()`, `row_spec()` per l'evidenziazione cromatica e `add_indent()` per la gerarchia testuale. [Esempi di stile](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html).
+*   **RStudio/Posit.** *R Markdown: The Definitive Guide.* Riferimento per la creazione di layout dinamici tramite l'attributo `{.tabset .tabset-pills}`. [Guida ai tabsets](https://bookdown.org/yihui/rmarkdown-cookbook/html-tabs.html).
+
+*   **W3Schools / MDN Web Docs.** *CSS Flexbox e Custom Styling.* Utilizzato per lo sviluppo dei blocchi `<style>` atti a personalizzare i bottoni di navigazione, la palette colori magenta/rosa e la gestione della responsività tramite i comandi `display: flex` e `justify-content: center`. (Sito MDN)[https://developer.mozilla.org/en-US/], (Sito W3Schools)[https://www.w3schools.com/]
+
+
+
+                                      Report svolto in RMarkdown
+<script>
+$(document).ready(function() {
+// Funzione per rimuovere tab invalide o vuote
+function fixTabs() {
+$('.nav-pills li, .nav-tabs li').each(function() {
+var txt = $(this).text().toLowerCase().trim();
+if (txt.indexOf('undefined') > -1 || txt === "" || txt === "null") {
+$(this).remove();
+}
+});
+}
+
+// Eseguo subito e dopo un breve delay per i tabset nidificati
+fixTabs();
+setTimeout(fixTabs, 300);
+});
+</script>
